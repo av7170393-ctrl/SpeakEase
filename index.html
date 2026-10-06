@@ -105,11 +105,11 @@ $('mic').onclick=()=>{
  if(on){acc+=(Date.now()-t0)/1000;stop();stats();return}
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR){toast(NOMIC);return}
- const base=$('ans').value?$('ans').value.trim()+' ':'';
- rec=new SR();rec.lang='en-IN';rec.continuous=true;rec.interimResults=true;
- rec.onresult=e=>{let s='';for(let i=0;i<e.results.length;i++)s+=e.results[i][0].transcript;$('ans').value=base+s;stats()};
+ let base=$('ans').value?$('ans').value.trim()+' ':'',fin='';
+ rec=new SR();rec.lang='en-IN';rec.continuous=false;rec.interimResults=true;
+ rec.onresult=e=>{let it='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i],tx=r[0].transcript.trim();if(r.isFinal){if(tx&&!fin.endsWith(tx))fin+=(fin?' ':'')+tx}else it+=tx+' '}$('ans').value=(base+fin+' '+it).replace(/\s+/g,' ').trim();stats()};
  rec.onerror=e=>{on=false;clearInterval(tm);$('mic').textContent='🎤 Start speaking';$('mic').classList.remove('rec');toast(e.error==='no-speech'?'🎤 I did not hear anything. Speak a little closer and try again.':NOMIC)};
- rec.onend=()=>{if(on){try{rec.start()}catch(e){}}};
+ rec.onend=()=>{if(on){base=$('ans').value?$('ans').value.trim()+' ':'';fin='';try{rec.start()}catch(e){}}};
  try{rec.start()}catch(e){toast(NOMIC);return}
  on=true;t0=Date.now();tm=setInterval(stats,1000);$('msg').textContent='';
  $('mic').textContent='⏹ Stop';$('mic').classList.add('rec')};
