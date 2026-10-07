@@ -23,3 +23,4 @@ Add your GitHub Pages link here after deploying.
 Voice features work best in Chrome on desktop and Android. Feedback is rule-based in this version.
 
 Built by **Aryan Verma** – B.Tech CSE (AI & ML).
+
